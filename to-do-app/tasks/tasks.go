@@ -56,3 +56,35 @@ func AddTask(task models.Task) {
 	// Optionally, use the taskId for further processing
 	log.Printf("Task added with ID: %d\n", taskId)
 }
+
+func GetTasksByName(SearchString string) []models.Task {
+	db := database.GetDbConnection()
+	defer db.Close()
+
+	rows, err := db.Query(
+		"SELECT * FROM tasks WHERE title LIKE ?", "%"+SearchString+"%")
+	if err != nil {
+		log.Fatalf("Error while fetching tasks by name: %s\n", err)
+	}
+	defer rows.Close()
+
+	tasks := []models.Task{}
+	for rows.Next() {
+		var task models.Task
+		err := rows.Scan(
+			&task.Id,
+			&task.Title,
+			&task.Description,
+			&task.DueDate,
+			&task.Completed,
+			&task.ListID,
+			&task.Priority,
+			&task.CreatedAt,
+		)
+		if err != nil {
+			log.Fatalf("Error while scanning task: %s\n", err)
+		}
+		tasks = append(tasks, task)
+	}
+	return tasks
+}

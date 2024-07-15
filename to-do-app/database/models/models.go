@@ -13,11 +13,11 @@ type Task struct {
 	Id 		int
 	Title       string
 	Description string
-	DueDate     string
+	DueDate     time.Time
 	Completed   bool
 	ListID      int
 	Priority    int
-	CreatedAt   string
+	CreatedAt   time.Time
 }
 
 // Mode of a tag
